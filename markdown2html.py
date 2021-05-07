@@ -56,7 +56,7 @@ def catch_error(f):
         try:
             f(*args, **kwargs)
         except (AssertionError, BaseException) as err:
-            exit(str(err))
+            sys.exit(str(err))
     return catch
 
 
