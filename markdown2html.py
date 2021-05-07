@@ -18,9 +18,10 @@ class MarkDown:
 
     def heading(self, text):
         markd = text.split(' ')
-        return f'<h{len(markd[0])}>\
-            {"".join(markd[1:]).strip()}\
-            </h{len(markd[0])}>\n'
+        result = f'<h{len(markd[0])}>'
+        result += "".join(markd[1:]).strip()
+        result += f'</h{len(markd[0])}>\n'
+        return result
 
     def unordered_list(self, text):
         extracted = text.split(' ')
