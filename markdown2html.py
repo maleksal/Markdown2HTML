@@ -69,7 +69,7 @@ def main():
         "Usage: ./markdown2html.py README.md README.html"
     # src && dest files
     src, dest = sys.argv[1], sys.argv[2]
-    assert os.path.exists(src), "Missing <filename>"
+    assert os.path.exists(src), f"Missing {src}"
 
     # markdown parser
     markdown = MarkDown()
