@@ -25,8 +25,8 @@ class MarkDown:
         return result
 
     def unordered_list(self, text):
-        extracted = text.split(' ')
-        self.unrd_list.append(f"<li>{' '.join(extracted[1:]).strip()}</li>\n")
+        extracted = text.split('-')
+        self.unrd_list.append(f"<li>{''.join(extracted).strip()}</li>\n")
         if len(self.unrd_list) > 1:
             return f"<ul>\n{''.join(self.unrd_list)}</ul>\n"
 
