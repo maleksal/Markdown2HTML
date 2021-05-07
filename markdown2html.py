@@ -65,7 +65,7 @@ def catch_error(f):
 def main():
     """entry point
     """
-    assert len(sys.argv) == 3,\
+    assert len(sys.argv) >= 3,\
         "Usage: ./markdown2html.py README.md README.html"
     # src && dest files
     src, dest = sys.argv[1], sys.argv[2]
