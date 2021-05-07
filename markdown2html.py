@@ -70,7 +70,7 @@ def main():
     # src && dest files
     src, dest = sys.argv[1], sys.argv[2]
     assert os.path.exists(src), f"Missing {src}"
-    """
+
     # markdown parser
     markdown = MarkDown()
 
@@ -78,7 +78,6 @@ def main():
         with open(dest, 'w') as wf:
             for l in rf.readlines():
                 wf.write(markdown.parser(l))
-    """
 
 
 if __name__ == "__main__":
