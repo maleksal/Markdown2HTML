@@ -20,13 +20,13 @@ class MarkDown:
         hdings = text.count("#")
         markd = text.split('#')
         result = f'<h{hdings}>'
-        result += "".join(markd).strip('\n')
+        result += "".join(markd)
         result += f'</h{hdings}>\n'
         return result
 
     def unordered_list(self, text):
         extracted = text.split('-')
-        self.unrd_list.append("<li>" + ''.join(extracted).strip('\n')
+        self.unrd_list.append("<li>" + ''.join(extracted)
                                      + "</li>\n")
         if len(self.unrd_list) > 1:
             return f"<ul>\n{''.join(self.unrd_list)}</ul>\n"
@@ -77,8 +77,9 @@ def main():
 
     with open(src, 'r') as rf:
         with open(dest, 'w') as wf:
-            for l in rf.readlines():
-                result = markdown.parser(l)
+            for n, line in enumerate(rf.readlines()):
+                result = markdown.parser(
+                    line.strip('\n')) if line != '\n' else ""
                 wf.write(result) if result else ""
 
 
