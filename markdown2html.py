@@ -1,18 +1,26 @@
 #!/usr/bin/python3
+"""
+Parser Module.
+"""
+
 import sys
 import os
 from functools import wraps
 
 
 class MarkDown:
-
+    """
+    MarkDown class
+    """
     def __init__(self):
         self.unrd_list = []
         self.ord_list = []
 
     def heading(self, text):
-            markd = text.split(' ')
-            return f'<h{len(markd[0])}>{"".join(markd[1:]).strip()}</h{len(markd[0])}>\n'
+        markd = text.split(' ')
+        return f'<h{len(markd[0])}>\
+            {"".join(markd[1:]).strip()}\
+            </h{len(markd[0])}>\n'
 
     def unordered_list(self, text):
         extracted = text.split(' ')
@@ -40,7 +48,6 @@ class MarkDown:
             return pointers[splited[0]](text)
 
 
-
 def catch_error(f):
     """handle errors
     """
@@ -55,8 +62,10 @@ def catch_error(f):
 
 @catch_error
 def main():
-
-    assert len(sys.argv) == 3, "Usage: ./markdown2html.py README.md README.html"
+    """entry point
+    """
+    assert len(sys.argv) == 3,\
+        "Usage: ./markdown2html.py README.md README.html"
     # src && dest files
     src, dest = sys.argv[1], sys.argv[2]
     assert os.path.exists(src), "Missing <filename>"
@@ -68,9 +77,6 @@ def main():
         with open(dest, 'w') as wf:
             for l in rf.readlines():
                 wf.write(markdown.parser(l))
-
-        
-
 
 
 if __name__ == "__main__":
