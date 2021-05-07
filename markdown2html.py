@@ -17,10 +17,11 @@ class MarkDown:
         self.ord_list = []
 
     def heading(self, text):
-        markd = text.split(' ')
-        result = f'<h{len(markd[0])}>'
-        result += " ".join(markd[1:]).strip('\n')
-        result += f'</h{len(markd[0])}>\n'
+        hdings = text.count("#")
+        markd = text.split('#')
+        result = f'<h{hdings}>'
+        result += "".join(markd).strip('\n')
+        result += f'</h{hdings}>\n'
         return result
 
     def unordered_list(self, text):
@@ -28,14 +29,12 @@ class MarkDown:
         self.unrd_list.append(f"<li>{' '.join(extracted[1:]).strip()}</li>\n")
         if len(self.unrd_list) > 1:
             return f"<ul>\n{''.join(self.unrd_list)}</ul>\n"
-        return ""
 
     def ordered_list(self, text):
         extracted = text.split(' ')
         self.ord_list.append(f"<li>{''.join(extracted[1:]).strip()}</li>\n")
         if len(self.ord_list) > 1:
             return f"<ol>\n{''.join(self.ord_list)}</ol>\n"
-        return ""
 
     def parser(self, text):
         pointers = {
@@ -78,7 +77,8 @@ def main():
     with open(src, 'r') as rf:
         with open(dest, 'w') as wf:
             for l in rf.readlines():
-                wf.write(markdown.parser(l))
+                result = markdown.parser(l)
+                wf.write(result) if result else ""
 
 
 if __name__ == "__main__":
