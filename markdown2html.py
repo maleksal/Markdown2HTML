@@ -19,7 +19,7 @@ class MarkDown:
     def heading(self, text):
         markd = text.split(' ')
         result = f'<h{len(markd[0])}>'
-        result += " ".join(markd[1:]).strip()
+        result += " ".join(markd[1:]).strip('\n')
         result += f'</h{len(markd[0])}>\n'
         return result
 
