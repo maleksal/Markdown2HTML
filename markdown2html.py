@@ -96,10 +96,10 @@ class MarkDown:
             "-": self.html_lists,
             "*": self.html_lists
         }
-        tag = text.split(' ')[0][0]
-        if tag in pointers.keys():
+        tag = text.split(' ')[0]
+        if len(tag) == 1 and tag[0] in pointers.keys():
             result, pos = pointers[tag](tag), self.position
-        elif tag.isalpha():
+        elif tag[0].isalpha() or tag.startswith('**'):
             result, pos = self.html_paragraph(), self.position
         else:
             return None, self.position
