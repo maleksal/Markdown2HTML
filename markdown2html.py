@@ -30,9 +30,7 @@ class MarkDown:
         text = self.filecontent[self.position]
         templates = {"**": "<b>@</b>", "__": "<em>@</em>"}
         to_replace = []
-        print(text)
         if not text.startswith("#"):
-            print(text)
             for k in templates.keys():
                 if k in text and text.count(k) % 2 == 0:
                     k = '\\*\\*' if k == '**' else k
