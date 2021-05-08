@@ -12,11 +12,13 @@ class MarkDown:
     """
     MarkDown class
     """
-    def __init__(self):
-        self.unrd_list = []
+    def __init__(self, content):
+        self.filecontent = content
         self.ord_list = []
+        self.unrd_list = []
 
-    def heading(self, text):
+    def heading(self):
+        text = self.filecontent[self.position]
         hdings = text.count("#")
         markd = text.split('#')
         result = f'<h{hdings}>'
@@ -24,20 +26,31 @@ class MarkDown:
         result += f'</h{hdings}>\n'
         return result
 
-    def unordered_list(self, text):
+    def unordered_list(self):
+        text = self.filecontent[self.position]
         extracted = text.split('-')
         self.unrd_list.append("<li>" + ''.join(extracted)
                                      + "</li>\n")
-        if len(self.unrd_list) > 1:
+
+        if self.filecontent[self.position + 1].startswith('-'):
+            self.position += 1
+            self.unordered_list()
+        if self.unrd_list:
             return f"<ul>\n{''.join(self.unrd_list)}</ul>\n"
 
-    def ordered_list(self, text):
+    def ordered_list(self):
+        text = self.filecontent[self.position]
         extracted = text.split('*')
-        self.ord_list.append(f"<li>{''.join(extracted)}</li>\n")
-        if len(self.ord_list) > 1:
+        self.ord_list.append("<li>" + ''.join(extracted) + "</li>\n")
+
+        if self.filecontent[self.position + 1].startswith('*'):
+            self.position += 1
+            self.ordered_list()
+        if self.ord_list:
             return f"<ol>\n{''.join(self.ord_list)}</ol>\n"
 
-    def parser(self, text):
+    def parser(self, text, position):
+        self.position = position
         pointers = {
             "#": self.heading,
             "-": self.unordered_list,
@@ -46,7 +59,8 @@ class MarkDown:
         }
         splited = text.split(' ')[0]
         if splited[0] in pointers.keys():
-            return pointers[splited[0]](text)
+            return pointers[splited[0]](), self.position
+        return None, self.position
 
 
 def catch_error(f):
@@ -73,14 +87,19 @@ def main():
     assert os.path.exists(src), f"Missing {src}"
 
     # markdown parser
-    markdown = MarkDown()
 
     with open(src, 'r') as rf:
-        with open(dest, 'w') as wf:
-            for n, line in enumerate(rf.readlines()):
-                result = markdown.parser(
-                    line.strip('\n')) if line != '\n' else ""
+        content = [i.strip('\n') for i in rf.readlines()]
+
+    markdown = MarkDown(content)
+    with open(dest, 'w') as wf:
+        position = 0
+        while position < len(content):
+            line = content[position]
+            if line not in " \n\t":
+                result, position = markdown.parser(line, position)
                 wf.write(result) if result else ""
+            position += 1
 
 
 if __name__ == "__main__":
