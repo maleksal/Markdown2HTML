@@ -32,7 +32,8 @@ class MarkDown:
         self.unrd_list.append("<li>" + ''.join(extracted)
                                      + "</li>\n")
 
-        if self.filecontent[self.position + 1].startswith('-'):
+        if self.position + 1 < len(self.filecontent) and\
+                self.filecontent[self.position + 1].startswith('-'):
             self.position += 1
             self.unordered_list()
         if self.unrd_list:
