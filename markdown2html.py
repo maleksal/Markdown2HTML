@@ -22,14 +22,15 @@ class MarkDown:
         hdings = text.count("#")
         markd = text.split('#')
         result = f'<h{hdings}>'
-        result += "".join(markd)
+        print(markd[1])
+        result += "".join(markd).strip()
         result += f'</h{hdings}>\n'
         return result
 
     def unordered_list(self):
         text = self.filecontent[self.position]
         extracted = text.split('-')
-        self.unrd_list.append("<li>" + ''.join(extracted)
+        self.unrd_list.append("<li>" + ''.join(extracted).strip()
                                      + "</li>\n")
 
         if self.filecontent[self.position + 1].startswith('-'):
@@ -41,7 +42,7 @@ class MarkDown:
     def ordered_list(self):
         text = self.filecontent[self.position]
         extracted = text.split('*')
-        self.ord_list.append("<li>" + ''.join(extracted) + "</li>\n")
+        self.ord_list.append("<li>" + ''.join(extracted).strip() + "</li>\n")
 
         if self.filecontent[self.position + 1].startswith('*'):
             self.position += 1
