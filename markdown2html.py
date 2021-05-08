@@ -20,7 +20,7 @@ class MarkDown:
     def heading(self):
         text = self.filecontent[self.position]
         hdings = text.count("#")
-        markd = text.split('# ')
+        markd = text.split('#' * hdings + ' ')
         result = f'<h{hdings}>'
         result += "".join(markd).strip()
         result += f'</h{hdings}>\n'
