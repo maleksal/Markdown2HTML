@@ -92,17 +92,15 @@ class MarkDown:
     def parser(self, text, position):
         self.position = position
         pointers = {
-            "#": self.heading,
-            "-": self.html_lists,
-            "*": self.html_lists
+            "# ": self.heading,
+            "- ": self.html_lists,
+            "* ": self.html_lists
         }
         tag = text.split(' ')[0]
-        if tag[0] in pointers.keys() and not tag.startswith('**'):
-            result, pos = pointers[tag[0]](tag[0]), self.position
-        elif tag[0].isalpha() or tag.startswith('**'):
-            result, pos = self.html_paragraph(), self.position
+        if tag + ' ' in pointers.keys() and tag[0] + ' ' in pointers.keys():
+            result, pos = pointers[tag[0] + ' '](tag[0]), self.position
         else:
-            return None, self.position
+            result, pos = self.html_paragraph(), self.position
         # clear cache
         self.clear_cache()
         return result, pos
