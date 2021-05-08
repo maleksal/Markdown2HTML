@@ -5,6 +5,8 @@ Parser Module.
 
 import sys
 import os
+import hashlib
+from hashlib import md5
 import re
 from functools import wraps
 
@@ -26,19 +28,33 @@ class MarkDown:
         self.unrd_list.clear()
         self.p_list.clear()
 
+    @staticmethod
+    def tomd5_hash(string):
+        md5 = hashlib.md5()
+        md5.update(string.encode('utf-8'))
+        return md5.hexdigest()
+
     def html_format_font(self):
         text = self.filecontent[self.position]
-        templates = {"**": "<b>@</b>", "__": "<em>@</em>"}
+        templates = {
+            "**": "<b>@</b>",
+            "__": "<em>@</em>",
+            "[[": self.tomd5_hash}
         to_replace = []
-        if not text.startswith("#"):
-            for k in templates.keys():
-                if k in text and text.count(k) % 2 == 0:
-                    k = '\\*\\*' if k == '**' else k
-                    result = re.search('%s(.*)%s' % (k, k), text)
-                    if result:
-                        to_replace.append(
-                            (result.group(1), k.replace('\\', '')))
-            for tr in to_replace:
+        for k in templates.keys():
+            if k in text:
+                k = '\\*\\*' if k == '**' else k
+                kk = '\\]\\]' if k == '[[' else k
+                k = '\\[\\[' if k == '[[' else k
+                result = re.search('%s(.*)%s' % (k, kk), text)
+                if result:
+                    to_replace.append(
+                        (result.group(1), k.replace('\\', '')))
+        for tr in to_replace:
+            if tr[1] == '[[':
+                text = text.replace(
+                    f"{tr[1]}{tr[0]}]]", templates[tr[1]](tr[0]))
+            else:
                 text = text.replace(
                     f"{tr[1]}{tr[0]}{tr[1]}",  # ex **hel**
                     templates[tr[1]].replace('@', tr[0]))
