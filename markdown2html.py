@@ -43,7 +43,7 @@ class MarkDown:
         extracted = text.split('* ')
         self.ord_list.append("<li>" + ''.join(extracted) + "</li>\n")
 
-        if self.filecontent[self.position + 1].startswith('*'):
+        if self.filecontent[self.position + 1].startswith('* '):
             self.position += 1
             self.ordered_list()
         if self.ord_list:
@@ -59,7 +59,11 @@ class MarkDown:
         }
         splited = text.split(' ')[0]
         if splited[0] in pointers.keys():
-            return pointers[splited[0]](), self.position
+            result, pos = pointers[splited[0]](), self.position
+            # clear cache
+            self.unrd_list.clear()
+            self.ord_list.clear()
+            return result, pos
         return None, self.position
 
 
