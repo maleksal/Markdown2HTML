@@ -30,18 +30,20 @@ class MarkDown:
         text = self.filecontent[self.position]
         templates = {"**": "<b>@</b>", "__": "<em>@</em>"}
         to_replace = []
-        for k in templates.keys():
-            if k in text and text.count(k) % 2 == 0:
-                k = '\\*\\*' if k == '**' else k
-                result = re.search('%s(.*)%s' % (k, k), text)
-                if result:
-                    to_replace.append(
-                        (result.group(1), k.replace('\\', ''))
-                        )
-        for tr in to_replace:
-            text = text.replace(
-                f"{tr[1]}{tr[0]}{tr[1]}",  # ex **hel**
-                templates[tr[1]].replace('@', tr[0]))  # palce text in template
+        print(text)
+        if not text.startswith("#"):
+            print(text)
+            for k in templates.keys():
+                if k in text and text.count(k) % 2 == 0:
+                    k = '\\*\\*' if k == '**' else k
+                    result = re.search('%s(.*)%s' % (k, k), text)
+                    if result:
+                        to_replace.append(
+                            (result.group(1), k.replace('\\', '')))
+            for tr in to_replace:
+                text = text.replace(
+                    f"{tr[1]}{tr[0]}{tr[1]}",  # ex **hel**
+                    templates[tr[1]].replace('@', tr[0]))
         return text
 
     def heading(self, symbol):
