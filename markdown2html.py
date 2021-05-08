@@ -16,12 +16,14 @@ class MarkDown:
         self.filecontent = content
         self.ord_list = []
         self.unrd_list = []
+        self.p_list = []
 
     def clear_cache(self):
         """Clear cache.
         """
         self.ord_list.clear()
         self.unrd_list.clear()
+        self.p_list.clear()
 
     def heading(self, symbol):
         """Handle html heading parsing.
@@ -48,28 +50,43 @@ class MarkDown:
         cache_list.append("<li>" + ''.join(extracted)
                                  + "</li>\n")
 
-        if self.position + 1 < len(self.filecontent) and\
-                self.filecontent[self.position + 1].startswith(f'{symbol}'):
+        if (self.position + 1 < len(self.filecontent) and
+                self.filecontent[self.position + 1].startswith(f'{symbol}')):
             self.position += 1
             self.html_lists(symbol)
         if cache_list:
             return f"<{tag}>\n{''.join(cache_list)}</{tag}>\n"
+
+    def html_paragraph(self):
+        """Handle html p tag.
+        """
+        text = self.filecontent[self.position]
+        self.p_list.append(f"\n{text}\n")
+        if (self.position + 1 < len(self.filecontent)
+                and self.filecontent[self.position + 1] not in " \n\t"
+                and self.filecontent[self.position + 1][0].isalpha()):
+            self.position += 1
+            self.html_paragraph()
+        if self.p_list:
+            return f"<p>{'<br/>'.join(self.p_list)}</p>\n"
 
     def parser(self, text, position):
         self.position = position
         pointers = {
             "#": self.heading,
             "-": self.html_lists,
-            "*": self.html_lists,
-            "": "",
+            "*": self.html_lists
         }
         tag = text.split(' ')[0][0]
         if tag in pointers.keys():
             result, pos = pointers[tag](tag), self.position
-            # clear cache
-            self.clear_cache()
-            return result, pos
-        return None, self.position
+        elif tag.isalpha():
+            result, pos = self.html_paragraph(), self.position
+        else:
+            return None, self.position
+        # clear cache
+        self.clear_cache()
+        return result, pos
 
 
 def catch_error(f):
