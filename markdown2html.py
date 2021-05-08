@@ -97,7 +97,7 @@ class MarkDown:
             "* ": self.html_lists
         }
         tag = text.split(' ')[0]
-        if tag + ' ' in pointers.keys() and tag[0] + ' ' in pointers.keys():
+        if tag + ' ' in pointers.keys() or tag.startswith('#'):
             result, pos = pointers[tag[0] + ' '](tag[0]), self.position
         else:
             result, pos = self.html_paragraph(), self.position
