@@ -6,7 +6,6 @@ Parser Module.
 import sys
 import os
 import hashlib
-from hashlib import md5
 import re
 from functools import wraps
 
@@ -34,18 +33,28 @@ class MarkDown:
         md5.update(string.encode('utf-8'))
         return md5.hexdigest()
 
+    @staticmethod
+    def translate_str(string):
+        return string.translate(string.maketrans('cC', 'cc')).replace('c', '')
+
     def html_format_font(self):
         text = self.filecontent[self.position]
         templates = {
             "**": "<b>@</b>",
             "__": "<em>@</em>",
-            "[[": self.tomd5_hash}
+            "[[": self.tomd5_hash,
+            "((": self.translate_str}
         to_replace = []
         for k in templates.keys():
             if k in text:
                 k = '\\*\\*' if k == '**' else k
-                kk = '\\]\\]' if k == '[[' else k
+
                 k = '\\[\\[' if k == '[[' else k
+                kk = '\\]\\]' if k == '\\[\\[' else k
+
+                k = '\\(\\(' if k == '((' else k
+                kk = '\\)\\)' if k == '\\(\\(' else kk
+
                 result = re.search('%s(.*)%s' % (k, kk), text)
                 if result:
                     to_replace.append(
@@ -54,6 +63,9 @@ class MarkDown:
             if tr[1] == '[[':
                 text = text.replace(
                     f"{tr[1]}{tr[0]}]]", templates[tr[1]](tr[0]))
+            elif tr[1] == '((':
+                text = text.replace(
+                    f"{tr[1]}{tr[0]}))", templates[tr[1]](tr[0]))
             else:
                 text = text.replace(
                     f"{tr[1]}{tr[0]}{tr[1]}",  # ex **hel**
