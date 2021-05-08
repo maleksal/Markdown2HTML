@@ -22,7 +22,7 @@ class MarkDown:
         hdings = text.count("#")
         markd = text.split('# ')
         result = f'<h{hdings}>'
-        result += "".join(markd)
+        result += "".join(markd).strip()
         result += f'</h{hdings}>\n'
         return result
 
